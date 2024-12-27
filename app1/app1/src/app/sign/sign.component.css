@@ -1,0 +1,76 @@
+.t{
+    margin-top: 150px;
+    background-color: black;
+}
+h3{
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    font-family: lora;
+    font-style: italic;
+    position: relative;
+   
+}
+h3::after{
+    content: "";
+    top: 100%;
+    left: 40%;
+    width: 200px;
+    height:2px;
+    background-color: gold;
+    position: absolute;
+    display: flex;
+    
+}
+.input{
+    border: none;
+}
+.contact{
+    padding: 46px;
+    padding-bottom: 23px;
+    width: 70%;
+    margin: auto;
+}
+.name{
+    width: 49.7%;
+    margin-top: 30px;
+    padding: 15px;
+    border-radius: 10px;
+}
+.subject{
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px;
+    border-radius: 10px;
+}
+.msg{
+    width: 100%;
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 10px;
+}
+.btn{
+    padding: 15px;
+    margin-top: 30px;
+    color: white;
+    border-radius: 5px;
+    transition: all 0.4s;
+}
+.btn:hover{
+    background-color: gainsboro;
+    color: black;
+
+}
+
+.cop{
+    text-align: center;
+}
+.cop p{
+    color: white;
+}
+span{
+    font-size: 1.3rem;
+    font-family: lora;
+    color: gold;
+    font-style: italic;
+}

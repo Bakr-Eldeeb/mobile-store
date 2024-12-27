@@ -1,0 +1,62 @@
+<div class="t">
+<div class="container">
+    <h3>OUR STORES</h3>
+<div *ngFor="let store of stores" class="mt-5">
+    <div  class="car d-flex justify-content-evenly bg-dark">
+        <div class="col-lg-5 image">
+            <img src="{{store.picture}}" alt="" class="w-100 h-100">
+        </div>
+        <div class="col-lg-5 contact">
+            <h4>{{store.name}}</h4>
+            <p>{{store.address}}</p>
+            <a (click)="copyText(store.phone)" class="d-flex icon"> <i class="fa-solid fa-phone-volume"></i><p>{{store.phone}}</p></a>           
+            <a href="https://www.google.com/maps/place/30%C2%B000'22.9%22N+30%C2%B058'19.9%22E/@30.0063704,30.9696304,17z/data=!3m1!4b1!4m4!3m3!8m2!3d30.0063704!4d30.9722053?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="d-flex icon"><i class="fa-solid fa-location-dot"></i><p>location</p></a>
+            <a class="d-flex icon"><i class="fa-solid fa-store"></i><p>Working Hours: {{store.hours}}</p></a>
+
+        </div>
+    </div>
+</div>
+</div>
+<div class="about">
+<div class="back">    <img src="../assets/images/about.jpg" alt="">
+    <div class="front row justify-content-between w-100">
+     <div class="col-6 f1">
+        <h5>MOBILE HUB</h5>
+        <h6>Ready to Make Your Digital Life</h6>
+        <a (click)="copyText('19157')" class="d-flex icon hotline"> <i class="fa-solid fa-phone-volume"></i><p>19157</p></a>
+     </div>  
+     <div class="col-6 d-flex justify-content-evenly align-items-center list">
+        <ul>
+            <li class="head">Links</li>
+            <li class="links"><a routerLink='home' routerLinkActive='active'>Home</a></li>
+            <li class="links"><a routerLink='apple' routerLinkActive='active'>Apple</a></li>
+            <li class="links"><a routerLink='samsumg' routerLinkActive='active'>Samsung</a></li>
+            <li class="links"><a routerLink='oppo' routerLinkActive='active'>OPPO</a></li>
+            <li class="links"><a routerLink='cart' routerLinkActive='active'>Cart</a></li>
+        </ul>
+        <ul>
+            <li class="head">Support</li>
+            <li class="links"><a href="">Novamber offers</a></li>
+            <li class="links"><a href="">Redeem Points</a></li>
+            <li class="links"><a href="">E-VOUCHER</a></li>
+            <li class="links"><a href="">Live Chat</a></li>
+            <li class="links"><a href="">Why to buy from Phone hub</a></li>
+        </ul>
+        <ul>
+            <li class="head">Help</li>
+            <li class="links"><a href="">corporate enquiries</a></li>
+            <li class="links"><a href="">order tracking</a></li>
+            <li class="links"><a href="">refund and return Policy</a></li>
+            <li class="links"><a href="">Terms & privacy Policy</a></li>
+            <li class="links"><a href="">Contact us</a></li>
+        </ul>
+     </div>   
+    </div>
+        
+</div>
+
+</div>
+<div class="cop row justify-content-center">
+    <p >Copy Right 2024 &copy; By  <span>  Bakr ELdeeb  </span>  All Rights Reserved</p>
+</div>
+</div>

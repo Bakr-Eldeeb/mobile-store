@@ -1,0 +1,74 @@
+.navbar{
+    background-color: rgb(102, 102, 190);
+    position: fixed;
+    width: 100%;
+    z-index: 6;
+    top: 75px;
+}
+.alert{
+    top: -10px;
+    position: fixed;
+    z-index: 5;
+    background-color: rgb(102, 102, 190);;
+}
+.alert img{
+    width: 100%;
+    height: 100%;
+}
+a{
+    color: white;
+}
+.home:hover{
+ color: red;
+}
+.btn{
+    background-color: white;
+    transition: all 0.5s;
+
+}
+.btn:hover{
+background-color: rgb(37, 175, 37);
+}
+.navbar-brand{
+    font-size: 1.7rem;
+    /* margin-top: 15px; */
+    font-family: lora;
+    font-style: italic;
+   transform: translateY(8px);
+}
+i{
+    color: white;
+    font-size: 2rem;
+    padding-right: 30px;
+    transition: all 0.5s;
+}
+i:hover{
+    color: blue;
+}
+.btn-sign{
+    border: none;
+    background-color: transparent;
+}
+
+
+.popover-form {
+    width: 300px; 
+    padding: 10px;
+  }
+  
+  .popover-form .form-label {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .popover-form .form-control {
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .popover-form .btn-primary {
+    width: 100%;
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  

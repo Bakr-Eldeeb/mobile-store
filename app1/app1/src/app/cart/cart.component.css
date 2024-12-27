@@ -1,0 +1,30 @@
+.t{
+    background-color: black;
+    padding: 50px;
+}
+.container{
+    margin-top: 150px;
+    background-color: black;
+}
+h2{
+    text-align: center;
+    color: white;
+
+}
+
+.ourproducts{
+    text-align: center;
+}
+.ourproducts h3{
+    background-color: rgba(249, 250, 251, 0.199);
+    width: 600PX;
+    padding: 15px;
+    border-radius: 20px;
+    color: white;
+    font-family: lora;
+    font-weight: bolder;
+    font-style: italic;
+}
+.num{
+    width: 52px;
+}

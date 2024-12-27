@@ -1,0 +1,1021 @@
+define([
+    "jquery",
+    'Magento_Ui/js/modal/modal',
+    "mage/template",
+    'mage/translate',
+    "mage/mage"
+], function($,modal,mageTemplate,$t) {
+    'use strict';
+    $.widget('magecomp.login', {
+
+        options: {
+            login: '#customer-popup-login',
+            nextRegister: '#customer-popup-registration',
+            prevLogin: '#customer-popup-sign-in',
+            nextForgotPassword: '#customer-popup-forgot-password',
+        },
+
+        _create: function () {
+
+            var self = this,
+            authenticationOptions = {
+                type: 'popup',
+                responsive: true,
+                innerScroll: true,
+                title: this.options.popupTitle,
+                buttons: false,
+                modalClass : 'customer-login-popup ' + this.options.customClass
+            };
+
+            $('body').on('click','.closebutton', function() {
+                $('.customer-login-popup .grecaptcha-badge').attr('style', 'display: none !important');
+                $( ".action-close" ).trigger( "click" );
+                $( "#forgotmob-error" ).hide();
+                $( "#loginotpmob-error" ).hide();
+                $( "#registermob-error" ).hide();
+            });
+            $('body').on('click','.action-close', function() {
+                $('.customer-login-popup .grecaptcha-badge').attr('style', 'display: none !important');
+            });
+
+            $('body').on('click', '.panel.header .ajax-login-link, .nav-sections-item-content .header .ajax-login-link, .ajax-login-link', function() {
+                self._resetForms();
+                self._showLogin();
+
+                modal(authenticationOptions, $(self.options.login));
+                $(self.options.login).modal('openModal');
+                 // clearInterval(timerinterval);
+                 // setInterval(timerinterval,1000);
+                self._setPopupTitle("Login");
+                $('.customer-login-popup .grecaptcha-badge').attr('style', 'display: block !important');
+                return false;
+            });
+             jQuery('.customer-login-popup').click(function(e){
+                e.preventDefault();
+            });
+
+    var otplength = $("#otplength").val();
+    var otpstringtype = $("#otpstringtype").val();
+            
+    $("input[id^=L]").keyup(function(e) {
+                var str = "";
+                    $("input[id^=L]").each(function(index) {
+                        str = str + $(this).val()
+                    });
+                    $("#mobile-otp").val(str);
+    });
+    var loginid="#L01,#L02,#L03,#L04";
+    if(otplength==6){
+        loginid = "#L01,#L02,#L03,#L04,#L05,#L06";
+    }
+               
+    $(loginid).bind("paste", function(e){
+                    var pastedData = e.originalEvent.clipboardData.getData('text');
+                    setTimeout(function(){
+                        $("#L01").val(pastedData.slice(0,1));
+                        $("#L02").val(pastedData.slice(1,2));
+                        $("#L03").val(pastedData.slice(2,3));
+                        $("#L04").val(pastedData.slice(3,4));
+                        if(otplength==6){
+                            $("#L05").val(pastedData.slice(4,5));
+                            $("#L06").val(pastedData.slice(5,6));
+                        }
+                        $('#mobile-otp').val(pastedData);
+                    },0);
+    });
+    $(loginid).on('input', function(e) {
+         if(otpstringtype!='AN'){
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+         }    
+    });
+    $(loginid).keyup(function(e){
+    	if($("#mobile-otp").val().length < otplength){	
+ 		    if($(this).val().length >= $(this).attr('maxlength')){
+                    	if($(this).attr('data-next-elem')){
+                            if(e.keyCode == 9 || e.keyCode == 16){
+                                e.stoppropagation();
+                                return false;
+                            }
+                            document.getElementById($(this).attr('data-next-elem')).focus();
+                        }
+                    }
+        }
+        if(e.keyCode == 8 && $(this).val().length == 0){
+            if($(this).attr('data-prev-elem')){
+                document.getElementById($(this).attr('data-prev-elem')).focus();
+            }
+        }
+    });
+          
+    $("input[id^=R]").keyup(function(e) {
+                var str = "";
+                $("input[id^=R]").each(function(index) {
+                    str = str + $(this).val()
+                });
+                $("#mobile-otp-reg").val(str);
+    });
+    var registrationid="#R01,#R02,#R03,#R04";
+    if(otplength==6){
+          registrationid = "#R01,#R02,#R03,#R04,#R05,#R06";
+    }
+
+    $(registrationid).bind("paste", function(e){
+                var pastedData = e.originalEvent.clipboardData.getData('text');
+                setTimeout(function(){
+                    $("#R01").val(pastedData.slice(0,1));
+                    $("#R02").val(pastedData.slice(1,2));
+                    $("#R03").val(pastedData.slice(2,3));
+                    $("#R04").val(pastedData.slice(3,4));
+                    if(otplength==6){
+                        $("#R05").val(pastedData.slice(4,5));
+                        $("#R06").val(pastedData.slice(5,6));
+                    }
+                    $('#mobile-otp-reg').val(pastedData);
+                },0);
+    });
+    $(registrationid).on('input', function(e) {
+         if(otpstringtype!='AN'){
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+         }  
+    });
+    $(registrationid).keyup(function(e){
+            if($('#mobile-otp-reg').val().length < otplength){  
+                if($(this).val().length >= $(this).attr('maxlength')){
+                    if($(this).attr('data-next-elem')){
+                        if(e.keyCode == 9 || e.keyCode == 16){
+                            e.stoppropagation();
+                            return false;
+                        }
+                        document.getElementById($(this).attr('data-next-elem')).focus();
+                    }
+                }
+            }
+                if(e.keyCode == 8 && $(this).val().length == 0){
+                    if($(this).attr('data-prev-elem')){
+                        document.getElementById($(this).attr('data-prev-elem')).focus();
+                    }
+                }
+    });
+             
+    $("input[id^=F]").keyup(function(e) {
+                var str = "";
+                $("input[id^=F]").each(function(index) {
+                    str = str + $(this).val()
+                });
+                $("#mobile-otp-forgot-popup").val(str);
+    });
+    var forgorpasswordid="#F01,#F02,#F03,#F04";
+    if(otplength==6){
+                forgorpasswordid = "#F01,#F02,#F03,#F04,#F05,#F06";
+    }
+
+    $(forgorpasswordid).bind("paste", function(e){
+                var pastedData = e.originalEvent.clipboardData.getData('text');
+                setTimeout(function(){
+                    $("#F01").val(pastedData.slice(0,1));
+                    $("#F02").val(pastedData.slice(1,2));
+                    $("#F03").val(pastedData.slice(2,3));
+                    $("#F04").val(pastedData.slice(3,4));
+                    if(otplength==6){
+                        $("#F05").val(pastedData.slice(4,5));
+                        $("#F06").val(pastedData.slice(5,6));
+                    }
+                    $('#mobile-otp-forgot-popup').val(pastedData);
+                },0);
+    });
+    $(forgorpasswordid).on('input', function(e) {
+        if(otpstringtype!='AN'){
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+        }  
+    });
+    $(forgorpasswordid).keyup(function(e){
+        if($('#mobile-otp-forgot-popup').val().length < otplength){  
+                if($(this).val().length >= $(this).attr('maxlength')){
+                    if($(this).attr('data-next-elem')){
+                        if(e.keyCode == 9 || e.keyCode == 16){
+                            e.stoppropagation();
+                            return false;
+                        }
+                        document.getElementById($(this).attr('data-next-elem')).focus();
+                    }
+                }
+        }
+        if(e.keyCode == 8 && $(this).val().length == 0){
+            if($(this).attr('data-prev-elem')){
+                document.getElementById($(this).attr('data-prev-elem')).focus();
+            }
+        }
+    }); 
+
+    $("#login-email .flag-container").hide();                
+    $("#login-email .mobilenumber-popup-flag").css('padding-left','10px');
+    $("#login-email .mobilenumber-popup-flag").keyup(function(){
+        $("#countrycode").val('');
+        var mobile = $(".mobilenumber-popup-flag").val();
+        $("#login-email .flag-container").show();
+        $("#login-email .mobilenumber-popup-flag").css('padding-left','80px');
+        $(".mobilenumber-popup-flag").removeAttr('maxlength');
+        if(!$.isNumeric(mobile))
+        {
+            jQuery("#mobile-login-email-error").hide();
+            jQuery(".mobilenumber-popup-flag").attr('data-validate',"{required:true}");
+            $("#login-email .flag-container").hide();                
+            $("#login-email .mobilenumber-popup-flag").css('padding-left','10px');
+            $("#login-email .mobilenumber-popup-flag").attr('class','input-text required-entry textinput input-line mobilenumber-popup-flag');
+        }else{
+            jQuery(".mobilenumber-popup-flag").attr('data-validate',"{required:true, 'validate-number':true,'validate-length':true}");
+            var str = $("#login-email .selected-flag").attr("title");
+            var countrycode =  str.split('+')[1];
+            var countrycodeval = $("#login-email .flag-container > .country-list > .active").attr("data-country-code");
+            var validate = self._showValidateMobilenumer(countrycodeval);
+            var mobilenumber = countrycode+mobile;
+            var countrycodecount = parseInt(validate) + parseInt(countrycode.length);
+            $(".mobilenumber-popup-flag").removeClass('minimum-length-'+validate);
+            $("#countrycode").val(countrycode);
+            if(validate != mobilenumber.length && countrycodecount != mobilenumber.length && validate!=false){
+               $(".mobilenumber-popup-flag").attr('maxlength',validate);
+               $("#login-email .mobilenumber-popup-flag").attr('class','input-text required-entry textinput input-line mobilenumber-popup-flag minimum-length-'+validate);
+            }
+            if(validate==false){
+                $(".mobilenumber-popup-flag").addClass('minimum-length-'+8);
+            }
+        }
+    });   
+
+    jQuery(".create-account-resend-otp").click(function (e) {
+        jQuery(".regi-sendotp").trigger('click');
+        jQuery("#reg-sms-please-wait").css('display','none');
+    });
+    function validateMobile(mobile)
+    {
+        var filter = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/;
+
+        if (filter.test(mobile)) {
+            if(mobile.length >= 7 && mobile.length <= 13){
+                var validate = true;
+            } else {
+                var validate = false;
+            }
+        }
+        else {
+            var validate = false;
+        }
+        return validate;
+    }
+    let timerOn = true;
+
+    $(document).ready(function (e) {
+        $(".form-create-account .submit").attr('disabled', 'disabled');
+    });
+            $('body').on('click', '.panel.header .ajax-register-link, .nav-sections-item-content .header .ajax-register-link, .ajax-register-link', function() {
+                self._resetForms();
+                self._showRegistration();
+                modal(authenticationOptions, $(self.options.login));
+                $(self.options.login).modal('openModal');
+                 
+                $('.customer-login-popup .grecaptcha-badge').attr('style', 'display: block !important');
+                self._setPopupTitle("Register");
+                return false;
+            });
+            $('body').on('click', self.options.nextRegister, function() {
+                self._setPopupTitle("Register");
+                self._showRegistration();
+                return false;
+            });
+            $('body').on('click', self.options.prevLogin, function() {
+                self._setPopupTitle("Login");
+                self._showLogin();
+                return false;
+            });
+            $('body').on('click', self.options.nextForgotPassword, function() {
+                self._setPopupTitle("Forgot Password");
+                self._showForgotPassword();
+                return false;
+            });
+            $('body').on('click','.modals-overlay', function() {
+                $(".action-close").trigger("click");
+                jQuery('.customer-login-popup .grecaptcha-badge').attr('style', 'display: none !important');
+            });
+
+            $("body").on("click",".customer-popup-sign-in", function() {
+                $(self.options.prevLogin).trigger("click");
+            });
+            $('body').on('click','.login-option #loginwithotp', function() {
+                $(".password-login").hide();
+                $(".otp-login-verify").hide();
+                $(".otp-login").show();
+
+                $("#loginwithajax").removeClass("active");
+                $("#loginwithotp").addClass("active");
+                setTimeout(function(){
+                    $(".forgorpassword-messages.message-success.success.message").css('display','none');
+                }, 3000);
+            });
+            $('body').on('click','.login-option #loginwithajax', function() {
+                $(".otp-login").hide();
+                $(".otp-login-verify").hide();
+                $(".password-login").show();
+
+                $("#loginwithotp").removeClass("active");
+                $("#loginwithajax").addClass("active");
+                setTimeout(function(){
+                    $(".forgorpassword-messages.message-success.success.message").css('display','none');
+                }, 3000);
+            });
+
+            $('body').on('change',"input[type=radio][name=reset-type]", function(){
+                var seletedType = this.value;
+                if(seletedType == "mobile") {
+                    $(".emailforgot").hide();
+                    $(".mobileforgot").show();
+                } else {
+                    $(".mobileforgot").hide();
+                    $(".mobileforgotpassword").hide();
+                    $(".mobileforgotverify").hide();
+                    $(".emailforgot").show();
+                }
+            });
+
+
+
+            $('body').on('click',".registraiontpsend button", function(e) {
+                self._ajaxRegistrationOtpSend(e);
+            });
+            $('body').on('click',"#resendreg", function(e) {
+                $(".reg-form #verifyotp").removeClass(".required-entry");
+                self._ajaxRegistrationOtpSend(e);
+            });
+            $('body').on('click',".registraiontpverify button", function(e) {
+                self._ajaxRegistrationOtpVerify(e);
+            });
+            $('body').on('click',".registraionform button", function(e) {
+                self._ajaxRegistrationCreate(e);
+            });
+            $('body').on('click',".password-login button", function(e) {
+                self._ajaxLogin(e);
+            });
+            $('body').on('click',".otp-login button", function(e) {
+                $('.grecaptcha-badge').attr('style', 'display: block !important');
+                self._ajaxLoginOtpSend(e);
+            });
+            $('body').on('click',"#resendlogin", function(e) {
+                $(".login-verify #verifyotp").removeClass(".required-entry");
+                self._ajaxLoginOtpSend(e);
+                
+            });
+            $('body').on('click',".submit-btn-login", function(e) {
+                self._ajaxLoginOtpVerify(e);
+            });
+
+            $('body').on('click',".mobileforgot button", function(e) {
+                self._ajaxForgotOtpSend(e);
+            });
+            $('body').on('click',"#resendforgot", function(e) {
+                $(".forgotverify #verifyotp").removeClass(".required-entry");
+                self._ajaxForgotOtpSend(e);
+                
+            });
+            $('body').on('click',".mobileforgotverify button", function(e) {
+                self._ajaxForgotOtpVerify(e);
+            });
+            $('body').on('click',".mobileforgotpassword button", function(e) {
+                self._ajaxForgotReset(e);
+            });
+            $('body').on('click',".emailforgot button", function(e) {
+                self._ajaxForgotEmail(e);
+            });
+            $('body').on('click',".update-mobile-section button", function(e) {
+                self._ajaxUpdateMobile(e);
+            });
+        },
+
+
+        _resetForms: function() {
+            $(".registraion-otp-send").get(0).reset();
+            $(".registraion-otp-verify").get(0).reset();
+            $(".registraion-create-account").get(0).reset();
+            $(".login-email").get(0).reset();
+            $(".login-otp").get(0).reset();
+            $(".loginotp-verify").get(0).reset();
+            $(".forgot-otp").get(0).reset();
+            $(".forgot-otp-veify").get(0).reset();
+            $(".forgot-email").get(0).reset();
+
+            $(".customer-login-popup .messages").empty();
+        },
+
+        _setPopupTitle: function(title) {
+            $('.customer-login-popup .modal-title').text($.mage.__(title));
+        },
+
+       _showLogin: function() {
+
+            $(".login-option #loginwithotp").trigger("click");
+
+            $(".registratio-section").hide();
+            $(".forgot-password-section").hide();
+            $(".login-section").show();
+            $(".forgotimage").hide();
+            $(".regimage").hide();
+            $(".loginimage").show();
+        },
+
+        _showRegistration: function() {
+
+            $(".login-section").hide();
+            $(".forgot-password-section").hide();
+
+            $(".registraiontpverify").hide();
+            $(".registraionform").hide();
+            $(".registraiontpsend").show();
+            $(".registratio-section").show();
+             $(".forgotimage").hide();
+            $(".regimage").show();
+            $(".loginimage").hide();
+        },
+
+        _showForgotPassword: function() {
+            $('.reset_type').val('mobile').trigger('change');
+
+            $(".login-section").hide();
+            $(".registratio-section").hide();
+            $(".mobileforgotverify").hide();
+            $(".mobileforgotpassword").hide();
+            $(".emailforgot").hide();
+            $(".mobileforgot").show();
+            $(".forgot-password-section").show();
+            $(".forgotimage").show();
+            $(".regimage").hide();
+            $(".loginimage").hide();
+        },
+        _showValidateMobilenumer: function(code) {
+              var country_code = code.toUpperCase();
+             var validationarray = $('#mbvalidation').val();
+             var digit;
+                    
+                if(validationarray!=false){
+                        var validationobj = $.parseJSON(validationarray);
+                        var i = 0;
+                 while(i < validationobj.length){
+                            if(country_code && validationobj[0]['country'] != 1){
+                                if (validationobj[i]['country'] == country_code) {
+                                       
+                                    digit = validationobj[i]['digit'];
+                                    
+                                    return digit;
+                                }
+                                else if (validationobj[i]['country'] == 1) {
+                                     
+                                     
+                                    digit = validationobj[i]['digit'];
+                                   
+                                    return digit;         
+                                }
+                            }
+                            else if (validationobj[i]['country'] == 1) { 
+                             var j=1; 
+                                 while(j < validationobj.length){
+
+                                if (validationobj[j]['country'] == country_code) {   
+                                    digit = validationobj[j]['digit'];
+                                    return digit;
+                                }
+                                j++;
+
+                               
+                                      
+                            }
+                            digit = validationobj[i]['digit'];
+                             return digit;   
+
+                        }
+                            i++;
+                        }
+                }
+             return false;
+        },
+        _ajaxRegistrationOtpSend: function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dataForm = $('#registraion-otp-send');
+            window.addEventListener('DOMContentLoaded', e => {});
+
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid'); //validates form and returns boolean
+            var mobile = jQuery("#registermob").val();
+            var remaining = jQuery("#expiretime").val()*60;
+          
+            if(jQuery('.reg-mobile .iti__selected-flag').attr('title') != undefined) {
+                var countrycode=jQuery('.reg-mobile .iti__selected-flag').attr('title').match(/\d+/)[0];
+            } else {
+                var countrycode=jQuery('.reg-mobile .selected-flag').attr('title').match(/\d+/)[0];
+            }
+            var moblength=jQuery("#registermob").val().length;
+            mobile=countrycode.concat(mobile);
+           
+            var country_code = jQuery("#registermob-div .flag-container > .country-list > .active").attr("data-country-code");
+            if(status) {
+                
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: {mobile:mobile,countrycode:country_code,moblength:moblength},
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".registraiontpsend .messages .message").remove();
+                        if(response.status == true) {
+                            $(".registraiontpverify #verifymobile").val($(".registraiontpsend #registermob").val());
+                            $(".registraiontpsend").hide();
+                            $("#resendreg").hide();
+                            $(".registraiontpverify").show();
+                            $("#sendreg").show();
+                            jQuery(".timerdivreg-popup").show();
+                            $("#timerregotpverify-popup").text('0'+jQuery("#expiretime").val()+':00');
+                            registertimer(remaining,'timerregotpverify-popup');
+                        } else {
+                            if(response.isvalid == false) {
+                                $("#register-digit-error").show();
+                                $("#register-digit-error").text(response.message);
+                            }else{
+                                $("#register-digit-error").hide();
+                                   $('<div>', {
+                                    "class": 'message-error error message',
+                                    html: ""
+                                }).appendTo(".registraiontpsend .messages");
+                                $('<div>', {
+                                    "class": '',
+                                    html: $t(response.message)
+                                }).appendTo(".registraiontpsend .messages .message-error");
+                            }
+                        }
+                    }
+                });
+            }
+        },
+
+        _ajaxRegistrationOtpVerify: function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+           // jQuery(".timerdivreg").hide();
+            var dataForm = $('#registraion-otp-verify');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            var otp = jQuery("#mobile-otp-reg").val();
+            var mobile = jQuery("#registermob").val();
+              if(jQuery('.reg-mobile .iti__selected-flag').attr('title') != undefined) {
+                var countrycode=jQuery('.reg-mobile .iti__selected-flag').attr('title').match(/\d+/)[0];
+            } else {
+                var countrycode=jQuery('.reg-mobile .selected-flag').attr('title').match(/\d+/)[0];
+            }
+            mobile=countrycode.concat(mobile);
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data:{verifyotp:otp,mobile:mobile},
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".registraiontpverify .messages .message").remove();
+                        if(response.status == true) {
+                            $(".registraionform #createmobile").val($(".registraiontpverify #verifymobile").val());
+                            $(".registraionform #otp").val($("#mobile-otp-reg").val());
+                            $(".registraiontpverify").hide();
+                            $(".registraionform").show();
+                        } else {
+                            $('<div>', {
+                                "class": 'message-error error message',
+                                html: ""
+                            }).appendTo(".registraiontpverify .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".registraiontpverify .messages .message-error");
+                        }
+                    }
+                });
+            }
+        },
+
+        _ajaxRegistrationCreate: function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dataForm = $('#registraion-create-account');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            var mobile = jQuery("#registermob").val();
+              if(jQuery('.reg-mobile .iti__selected-flag').attr('title') != undefined) {
+            var countrycode=jQuery('.reg-mobile .iti__selected-flag').attr('title').match(/\d+/)[0];
+        } else {
+            var countrycode=jQuery('.reg-mobile .selected-flag').attr('title').match(/\d+/)[0];
+        }
+            mobile=countrycode.concat(mobile);
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#registraion-create-account').serialize() + '&mobilenumber='+mobile,
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".registraionform .messages .message").remove();
+                        if(response.status == true) {
+                            if(response.redirectUrl == "" || response.redirectUrl == null)
+                                location.reload(true);
+                            else
+                                window.location.href = response.redirectUrl;
+                        } else {
+                            $('<div>', {
+                                "class": 'message-error error message',
+                                html: ""
+                            }).appendTo(".registraionform .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".registraionform .messages .message-error");
+                        }
+                    }
+                });
+            }
+        },
+
+        _ajaxLogin: function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dataForm = $('#login-email');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#login-email').serialize(),
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".password-login .messages .message").remove();
+                        if(response.status == true) {
+                            if(response.redirectUrl == "" || response.redirectUrl == null)
+                                location.reload(true);
+                            else
+                                window.location.href = response.redirectUrl;
+                        } else {
+                           // grecaptcha.reset(); 
+                            $('<div>', {
+                                "class": 'message-error error message',
+                                html: ""
+                            }).appendTo(".password-login .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".password-login .messages .message-error");
+                        }
+                    }
+                });
+            }
+        },
+        _ajaxLoginOtpSend: function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dataForm = $('#login-otp');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid'); //validates form and returns boolean
+            var mobile = jQuery(".otp-login #loginotpmob").val();
+              if(jQuery('#login-otp .otp-content .iti__selected-flag').attr('title') != undefined) {
+                var countrycode=jQuery('#login-otp .otp-content .iti__selected-flag').attr('title').match(/\d+/)[0];
+            } else {
+                var countrycode=jQuery('#login-otp .otp-content .selected-flag').attr('title').match(/\d+/)[0];
+            }
+            var moblength=jQuery(".otp-login #loginotpmob").val().length;
+            mobile=countrycode.concat(mobile);
+            var country_code = jQuery(".otp-login .flag-container > .country-list > .active").attr("data-country-code");
+           
+            var remaining = jQuery("#expiretime").val()*60;
+            if(status) {
+
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#login-otp').serialize()+ '&loginotpmob='+mobile+'&countrycode='+country_code+'&moblength='+moblength,
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".otp-login .messages .message").remove();
+                        if(response.status == true) {
+                            $(".otp-login-verify #verifymobile").val($(".otp-login #loginotpmob").val());
+                            $(".otp-login").hide();
+                            $(".otp-login-verify").show();
+                            $("#resendlogin").hide();
+                            $("#submitlogin").show();
+                            jQuery(".timerdivlogin-popup").show();
+                            var display = document.querySelector('#timerloginverify-popup');
+                            $("#timerloginverify-popup").text('0'+jQuery("#expiretime").val()+':00');
+                            timer(remaining,'timerloginverify-popup');
+                        } else {
+                            if(response.isvalid == false) {
+                                $("#loginotpmob-digit-error").show();
+                                $("#loginotpmob-digit-error").text(response.message);
+                            }else{
+                                $("#loginotpmob-digit-error").hide();
+                                $('<div>', {
+                                "class": 'message-error error message',
+                                    html: ""
+                                }).appendTo(".otp-login .messages");
+                                $('<div>', {
+                                    "class": '',
+                                    html: $t(response.message)
+                                }).appendTo(".otp-login .messages .message-error");
+                            }
+                         }
+                    }
+                });
+            }
+        },
+
+        _ajaxLoginOtpVerify: function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            //jQuery(".timerdivlogin").show();
+            var dataForm = $('#loginotp-verify');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            var mobile = jQuery(".otp-login #loginotpmob").val();
+
+            if(jQuery('#login-otp .otp-content .iti__selected-flag').attr('title') != undefined) {
+                var countrycode=jQuery('#login-otp .otp-content .iti__selected-flag').attr('title').match(/\d+/)[0];
+            } else {
+                var countrycode=jQuery('#login-otp .otp-content .selected-flag').attr('title').match(/\d+/)[0];
+            }
+            mobile=countrycode.concat(mobile);
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#loginotp-verify').serialize()+ '&mobile='+mobile,
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".otp-login-verify .messages .message").remove();
+                        if(response.status == true) {
+                            if(response.redirectUrl == "" || response.redirectUrl == null)
+                                location.reload(true);
+                            else
+                                window.location.href = response.redirectUrl;
+                        } else {
+                            $('<div>', {
+                                "class": 'message-error error message',
+                                html: ""
+                            }).appendTo(".otp-login-verify .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".otp-login-verify .messages .message-error");
+                        }
+                    }
+                });
+            }
+        },
+
+        _ajaxForgotOtpSend: function(e)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dataForm = $('#forgot-otp');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            var mobile = jQuery(".mobileforgot #forgotmob").val();
+
+            if(jQuery('.forgot-input .iti__selected-flag').attr('title') != undefined) {
+                var countrycode=jQuery('.forgot-input .iti__selected-flag').attr('title').match(/\d+/)[0];
+            } else {
+                var countrycode=jQuery('.forgot-input .selected-flag').attr('title').match(/\d+/)[0];
+            }
+            var moblength=jQuery(".mobileforgot #forgotmob").val().length;
+            mobile=countrycode.concat(mobile);
+            var remaining = jQuery("#expiretime").val()*60;
+            var country_code = jQuery(".forgotmob-div .flag-container > .country-list > .active").attr("data-country-code");
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#forgot-otp').serialize()+'&forgotmob='+mobile+'&countrycode='+country_code+'&moblength='+moblength,
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".mobileforgot .messages .message").remove();
+                        if(response.status == true) {
+                            $(".mobileforgotverify #verifymobile").val($(".mobileforgot #forgotmob").val());
+                            $(".mobileforgot").hide();
+                            $("#resendforgot").hide();
+                            $(".mobileforgotverify").show();
+                            $("#sendforgot").show();
+                            $(".mobile").css("display","block");
+                            jQuery(".timerdivforgot-popup").show();
+                            $("#timerforgotpverify-popup").text('0'+jQuery("#expiretime").val()+':00');
+                            forgottimer(remaining,'timerforgotpverify-popup');
+                        } else {
+                            if(response.isvalid == false) {
+                                $("#forgot-digit-error").show();
+                                $("#forgot-digit-error").text(response.message);
+                            }else{
+                                $("#forgot-digit-error").hide();
+                                $('<div>', {
+                                    "class": 'message-error error message',
+                                    html: ""
+                                }).appendTo(".mobileforgot .messages");
+                                $('<div>', {
+                                    "class": '',
+                                    html: $t(response.message)
+                                }).appendTo(".mobileforgot .messages .message-error");
+                            }
+                            
+                        }
+                    }
+                });
+            }
+        },
+
+        _ajaxForgotOtpVerify: function(e)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            //jQuery(".timerdivforgot").hide();
+            var dataForm = $('#forgot-otp-veify');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            var mobile = jQuery(".mobileforgot #forgotmob").val();
+             if(jQuery('.forgot-input .iti__selected-flag').attr('title') != undefined) {
+                var countrycode=jQuery('.forgot-input .iti__selected-flag').attr('title').match(/\d+/)[0];
+            } else {
+                var countrycode=jQuery('.forgot-input .selected-flag').attr('title').match(/\d+/)[0];
+            }
+
+            mobile=countrycode.concat(mobile);
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#forgot-otp-veify').serialize()+ '&mobile='+mobile,
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".mobileforgotverify .messages .message").remove();
+                        if(response.status == true) {
+                            $(".mobileforgotpassword #mobilenumber").val($(".mobileforgotverify #verifymobile").val());
+                            $(".mobileforgotpassword #otp").val($("#mobile-otp-forgot-popup").val());
+
+                            $(".mobileforgotverify").hide();
+                            $(".mobileforgotpassword").show();
+                        } else {
+                            $('<div>', {
+                                "class": 'message-error error message',
+                                html: ""
+                            }).appendTo(".mobileforgotverify .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".mobileforgotverify .messages .message-error");
+                        }
+                    }
+                });
+            }
+        },
+
+        _ajaxForgotReset: function(e)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dataForm = $('#forgot-otp-password');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            var mobile = jQuery(".mobileforgot #forgotmob").val();
+            if(jQuery('.forgot-input .iti__selected-flag').attr('title') != undefined) {
+                var countrycode=jQuery('.forgot-input .iti__selected-flag').attr('title').match(/\d+/)[0];
+            } else {
+                var countrycode=jQuery('.forgot-input .selected-flag').attr('title').match(/\d+/)[0];
+            }
+
+            mobile=countrycode.concat(mobile);
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#forgot-otp-password').serialize()+'&mobile='+mobile,
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".mobileforgotpassword .messages .message").remove();
+                        if(response.status == true) {
+                            $("#customer-popup-sign-in").trigger("click");
+                            $(".login-option #loginwithajax").trigger("click");
+                            $(".forgorpassword-messages.message-success.success.message").css('display','block');
+                            $(".forgorpassword-messages.message-success.success.message span").text(response.message);
+                        } else {
+                            $('<div>', {
+                                "class": 'message-error error message',
+                                html: ""
+                            }).appendTo(".mobileforgotpassword .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".mobileforgotpassword .messages .message-error");
+                        }
+                    }
+                });
+            }
+        },
+
+        _ajaxForgotEmail: function(e)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dataForm = $('#forgot-email');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#forgot-email').serialize(),
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".emailforgot .messages .message").remove();
+                        if(response.status == true) {
+                            $('<div>', {
+                                "class": 'message-success success message',
+                                html: ""
+                            }).appendTo(".emailforgot .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".emailforgot .messages .message-success");
+                        } else {
+                            $('<div>', {
+                                "class": 'message-error error message',
+                                html: ""
+                            }).appendTo(".emailforgot .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".emailforgot .messages .message-error");
+                        }
+                    }
+                });
+            }
+        },
+
+        _ajaxUpdateMobile: function(e)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dataForm = $('#update-mobile');
+            var formPostUrl = dataForm.attr("action");
+            dataForm.mage('validation', {});
+            var status = dataForm.validation('isValid');
+            if(status) {
+                jQuery.ajax({
+                    type: 'post',
+                    url: formPostUrl,
+                    data: jQuery('#update-mobile').serialize(),
+                    cache: false,
+                    showLoader: 'true',
+                    success: function(response) {
+                        $(".update-mobile-section .messages .message").remove();
+                        if(response.status == true) {
+                            $('<div>', {
+                                "class": 'message-success success message',
+                                html: ""
+                            }).appendTo(".update-mobile-section .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".update-mobile-section .messages .message-success");
+                        } else {
+                            $('<div>', {
+                                "class": 'message-error error message',
+                                html: ""
+                            }).appendTo(".update-mobile-section .messages");
+                            $('<div>', {
+                                "class": '',
+                                html: $t(response.message)
+                            }).appendTo(".update-mobile-section .messages .message-error");
+                        }
+                    }
+                });
+            }
+        }
+    });
+    return $.magecomp.login;
+});
